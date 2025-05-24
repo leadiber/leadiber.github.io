@@ -1,100 +1,840 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ego Challenges</title>
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ego Challenges - A Spiritual Mini-Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Roboto:wght@300;400&display=swap');
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f5f2;
+            color: #333;
+            transition: background-color 0.5s ease;
+        }
+        
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .energy-bar {
+            transition: width 0.5s ease;
+        }
+        
+        .quote-box {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(245,245,245,0.9) 100%);
+            backdrop-filter: blur(5px);
+        }
+        
+        .choice-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .choice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wisdom-point {
+            animation: floatUp 1s ease-out forwards;
+        }
+        
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-50px); opacity: 0; }
+        }
+        
+        /* Language dropdown styles */
+        .language-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .language-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+            z-index: 1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .language-dropdown:hover .language-dropdown-content {
+            display: block;
+        }
+        
+        .language-option {
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .language-option:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .language-flag {
+            width: 20px;
+            margin-right: 10px;
+        }
+        
+        /* RTL support */
+        [dir="rtl"] {
+            text-align: right;
+        }
+        
+        [dir="rtl"] .language-flag {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+    </style>
 </head>
-<body class="flex items-center justify-center min-h-screen bg-gray-50 p-4">
-  <div id="app" class="w-full max-w-md bg-white shadow-lg rounded-lg p-6"></div>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="max-w-2xl w-full mx-auto">
+        <!-- Language Selector -->
+        <div class="language-dropdown absolute top-4 right-4">
+            <button class="flex items-center bg-white rounded-full px-4 py-2 shadow-sm">
+                <img src="https://flagcdn.com/w20/gb.png" class="language-flag" alt="English">
+                <span class="ml-2">English</span>
+                <i class="fas fa-chevron-down ml-2 text-sm"></i>
+            </button>
+            <div class="language-dropdown-content">
+                <div class="language-option" onclick="changeLanguage('en')">
+                    <img src="https://flagcdn.com/w20/gb.png" class="language-flag" alt="English">
+                    <span>English</span>
+                </div>
+                <div class="language-option" onclick="changeLanguage('es')">
+                    <img src="https://flagcdn.com/w20/es.png" class="language-flag" alt="Spanish">
+                    <span>Español</span>
+                </div>
+                <div class="language-option" onclick="changeLanguage('zh')">
+                    <img src="https://flagcdn.com/w20/cn.png" class="language-flag" alt="Chinese">
+                    <span>中文</span>
+                </div>
+                <div class="language-option" onclick="changeLanguage('fr')">
+                    <img src="https://flagcdn.com/w20/fr.png" class="language-flag" alt="French">
+                    <span>Français</span>
+                </div>
+                <div class="language-option" onclick="changeLanguage('it')">
+                    <img src="https://flagcdn.com/w20/it.png" class="language-flag" alt="Italian">
+                    <span>Italiano</span>
+                </div>
+                <div class="language-option" onclick="changeLanguage('ja')">
+                    <img src="https://flagcdn.com/w20/jp.png" class="language-flag" alt="Japanese">
+                    <span>日本語</span>
+                </div>
+                <div class="language-option" onclick="changeLanguage('ar')">
+                    <img src="https://flagcdn.com/w20/sa.png" class="language-flag" alt="Arabic">
+                    <span>العربية</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Header -->
+        <header class="text-center mb-8 fade-in">
+            <h1 class="title-font text-4xl md:text-5xl text-amber-800 mb-2" data-i18n="gameTitle">Ego Challenges</h1>
+            <p class="text-gray-600" data-i18n="gameSubtitle">A journey of self-awareness through daily dilemmas</p>
+        </header>
+        
+        <!-- Game Container -->
+        <main class="bg-white rounded-xl shadow-lg overflow-hidden fade-in">
+            <!-- Energy Bar -->
+            <div class="bg-gray-100 h-4 relative">
+                <div id="energyBar" class="energy-bar h-full bg-gradient-to-r from-amber-200 to-amber-500" style="width: 50%"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span id="energyScore" class="text-xs font-medium text-gray-700" data-i18n="balanceText">Balance: 50</span>
+                </div>
+            </div>
+            
+            <!-- Game Content -->
+            <div class="p-6 md:p-8">
+                <!-- Scenario Display -->
+                <div id="scenarioContainer" class="mb-8">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-amber-100 p-3 rounded-full mr-3">
+                            <i class="fas fa-question-circle text-amber-600 text-xl"></i>
+                        </div>
+                        <h2 id="scenarioTitle" class="title-font text-xl md:text-2xl text-gray-800" data-i18n="welcomeTitle">Welcome to Ego Challenges</h2>
+                    </div>
+                    <p id="scenarioText" class="text-gray-700 mb-6 leading-relaxed" data-i18n="welcomeText">
+                        This game presents you with everyday situations where you can choose between ego-based reactions and higher-conscious responses. Each choice affects your inner energy balance. There are no right or wrong answers—just opportunities for self-observation.
+                    </p>
+                    
+                    <div id="startScreen" class="text-center">
+                        <button id="startBtn" class="bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300" data-i18n="startButton">
+                            Begin Your Journey
+                        </button>
+                    </div>
+                    
+                    <div id="choicesContainer" class="hidden space-y-4">
+                        <button class="choice-btn w-full text-left p-4 rounded-lg border border-gray-200 hover:border-amber-300 bg-white">
+                            <div class="flex items-center">
+                                <div class="bg-red-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-ego text-red-500"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-800" data-i18n="egoChoiceLabel">Ego Response</h3>
+                                    <p class="text-sm text-gray-600" data-i18n="egoChoiceDescription">This choice comes from fear, pride, or attachment</p>
+                                </div>
+                            </div>
+                        </button>
+                        
+                        <button class="choice-btn w-full text-left p-4 rounded-lg border border-gray-200 hover:border-green-300 bg-white">
+                            <div class="flex items-center">
+                                <div class="bg-green-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-heart text-green-500"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-800" data-i18n="consciousChoiceLabel">Higher Consciousness</h3>
+                                    <p class="text-sm text-gray-600" data-i18n="consciousChoiceDescription">This choice comes from love, wisdom, or detachment</p>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Wisdom Points -->
+                <div id="wisdomPointsContainer" class="hidden text-center mb-6">
+                    <div class="inline-flex items-center bg-green-50 px-4 py-2 rounded-full">
+                        <i class="fas fa-star text-green-500 mr-2"></i>
+                        <span class="font-medium text-green-700" data-i18n="wisdomPointsLabel">Wisdom Points: </span>
+                        <span id="wisdomPoints" class="font-bold text-green-800 ml-1">0</span>
+                    </div>
+                </div>
+                
+                <!-- Feedback Section -->
+                <div id="feedbackContainer" class="hidden">
+                    <div class="quote-box p-5 rounded-lg border border-gray-100 shadow-sm mb-6">
+                        <div class="flex items-start">
+                            <div class="text-amber-500 mr-3 mt-1">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <div>
+                                <p id="feedbackText" class="italic text-gray-700 mb-2">"The quote will appear here after each choice, offering wisdom from spiritual traditions."</p>
+                                <p id="quoteSource" class="text-right text-sm text-gray-500">— Source</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button id="nextBtn" class="bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-6 rounded-lg transition duration-300" data-i18n="continueButton">
+                            Continue Your Journey
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="text-center text-sm text-gray-500 mt-8 fade-in">
+            <p data-i18n="footerText1">Practice observing your ego in daily life. Each moment is an opportunity for awakening.</p>
+            <p class="mt-2" data-i18n="footerText2">Made with <i class="fas fa-heart text-red-400"></i> for spiritual seekers</p>
+        </footer>
+    </div>
 
-  <script>
-  // --- Datos: preguntas y opciones ---
-  const questions = [
-    {
-      question: "Alguien te critica delante de otros…",
-      options: [
-        { text: "Respondo con sarcasmo", score: 0, feedback: "El ego reacciona." },
-        { text: "Respiro y agradezco en silencio", score: 1, feedback: "Cultivas la humildad." }
-      ]
-    },
-    {
-      question: "Ves algo que deseas pero no necesitas…",
-      options: [
-        { text: "Lo compro de todos modos", score: 0, feedback: "El deseo te domina." },
-        { text: "Observas el impulso y lo sueltas", score: 1, feedback: "Ganas desapego." }
-      ]
-    },
-    {
-      question: "Alguien hace algo distinto a como tú lo harías…",
-      options: [
-        { text: "Insisto que cambie", score: 0, feedback: "El control es una trampa del ego." },
-        { text: "Confío y suelto", score: 1, feedback: "Practicas la confianza." }
-      ]
-    }
-    // …añadí más preguntas aquí
-  ];
+    <script>
+        // Game Data with translations
+        const gameData = {
+            en: {
+                translations: {
+                    gameTitle: "Ego Challenges",
+                    gameSubtitle: "A journey of self-awareness through daily dilemmas",
+                    welcomeTitle: "Welcome to Ego Challenges",
+                    welcomeText: "This game presents you with everyday situations where you can choose between ego-based reactions and higher-conscious responses. Each choice affects your inner energy balance. There are no right or wrong answers—just opportunities for self-observation.",
+                    startButton: "Begin Your Journey",
+                    egoChoiceLabel: "Ego Response",
+                    egoChoiceDescription: "This choice comes from fear, pride, or attachment",
+                    consciousChoiceLabel: "Higher Consciousness",
+                    consciousChoiceDescription: "This choice comes from love, wisdom, or detachment",
+                    wisdomPointsLabel: "Wisdom Points: ",
+                    balanceText: "Balance: ",
+                    continueButton: "Continue Your Journey",
+                    footerText1: "Practice observing your ego in daily life. Each moment is an opportunity for awakening.",
+                    footerText2: "Made with ♥ for spiritual seekers",
+                    completeTitle: "Journey Complete",
+                    completeText: "You've completed this round of Ego Challenges. Observe how your ego shows up in daily life, and remember that each moment is an opportunity to choose higher consciousness."
+                },
+                scenarios: [
+                    {
+                        title: "The Critical Comment",
+                        text: "A colleague criticizes your work in front of others during a meeting. You feel defensive and embarrassed.",
+                        egoChoice: {
+                            text: "Respond sharply, pointing out their flaws to defend yourself.",
+                            feedback: "The ego thrives on being right and defending its position. In this moment, we often forget that criticism says more about the critic than about us.",
+                            quote: "Why do you see the speck in your neighbor's eye, but do not notice the log in your own eye?",
+                            source: "Matthew 7:3 (Christianity)",
+                            energyChange: -10
+                        },
+                        consciousChoice: {
+                            text: "Take a deep breath, acknowledge their point neutrally, and suggest discussing improvements later.",
+                            feedback: "By not reacting defensively, you create space for understanding. This detachment allows you to see the truth in the criticism without personalizing it.",
+                            quote: "The wise man lets go of all results, whether good or bad, and is focused on the action alone. Yoga is skill in actions.",
+                            source: "Bhagavad Gita 2.50 (Hinduism)",
+                            energyChange: 10,
+                            wisdomPoints: 1
+                        }
+                    },
+                    {
+                        title: "The Traffic Incident",
+                        text: "Someone cuts you off in traffic, nearly causing an accident. Your heart races with anger.",
+                        egoChoice: {
+                            text: "Honk aggressively, yell, and try to retaliate by cutting them off.",
+                            feedback: "The ego demands justice and reacts violently to perceived slights. But anger harms the vessel that carries it more than anyone else.",
+                            quote: "Holding on to anger is like grasping a hot coal with the intent of throwing it at someone else; you are the one who gets burned.",
+                            source: "Buddha",
+                            energyChange: -15
+                        },
+                        consciousChoice: {
+                            text: "Take deep breaths, let it go, and send them a silent wish for safe driving.",
+                            feedback: "By choosing compassion over retaliation, you free yourself from the cycle of anger. This moment becomes an opportunity for spiritual practice.",
+                            quote: "Bless those who curse you, pray for those who mistreat you.",
+                            source: "Luke 6:28 (Christianity)",
+                            energyChange: 15,
+                            wisdomPoints: 2
+                        }
+                    },
+                    {
+                        title: "The Social Media Post",
+                        text: "You see a post from an acquaintance showing off their luxurious vacation while you're struggling financially.",
+                        egoChoice: {
+                            text: "Feel bitter, compare your life to theirs, and post something to subtly show you're doing well too.",
+                            feedback: "Comparison is the thief of joy. The ego constantly measures itself against others, creating unnecessary suffering.",
+                            quote: "The root of suffering is attachment.",
+                            source: "Buddha",
+                            energyChange: -8
+                        },
+                        consciousChoice: {
+                            text: "Recognize their joy doesn't diminish yours, and genuinely appreciate their good fortune.",
+                            feedback: "True abundance comes from celebrating others' happiness as if it were your own. This is the practice of mudita (sympathetic joy).",
+                            quote: "A person in the divine consciousness, though engaged in seeing, hearing, touching, smelling, eating, moving about, sleeping, and breathing, always knows within themselves that they are not doing anything at all.",
+                            source: "Bhagavad Gita 5.8 (Hinduism)",
+                            energyChange: 8,
+                            wisdomPoints: 1
+                        }
+                    },
+                    {
+                        title: "The Unfair Advantage",
+                        text: "You notice a coworker taking credit for your idea in a group project. They might get promoted because of this.",
+                        egoChoice: {
+                            text: "Confront them angrily in front of everyone and demand recognition.",
+                            feedback: "While seeking justice is understandable, doing so from anger often creates more conflict. The ego wants credit, but wisdom knows all contributions eventually bear fruit.",
+                            quote: "Do not store up for yourselves treasures on earth, where moth and rust consume and where thieves break in and steal.",
+                            source: "Matthew 6:19 (Christianity)",
+                            energyChange: -12
+                        },
+                        consciousChoice: {
+                            text: "Speak privately with them and your supervisor, expressing your perspective calmly.",
+                            feedback: "Standing for truth with compassion creates the best outcome for all. This balanced approach maintains dignity while addressing the situation.",
+                            quote: "The awakened sages call a person wise when all their undertakings are free from anxiety about results.",
+                            source: "Bhagavad Gita 2.55 (Hinduism)",
+                            energyChange: 12,
+                            wisdomPoints: 2
+                        }
+                    },
+                    {
+                        title: "The Family Disagreement",
+                        text: "A family member makes a political comment you strongly disagree with during a holiday gathering.",
+                        egoChoice: {
+                            text: "Argue passionately to prove them wrong, escalating the tension.",
+                            feedback: "The ego loves to be right, often at the cost of harmony. Most arguments change no one's mind but damage relationships.",
+                            quote: "A gentle answer turns away wrath, but a harsh word stirs up anger.",
+                            source: "Proverbs 15:1 (Judaism/Christianity)",
+                            energyChange: -10
+                        },
+                        consciousChoice: {
+                            text: "Listen fully, then either change the subject or express your view without attachment to convincing them.",
+                            feedback: "True communication happens in listening, not in speaking. This creates space for understanding beyond ideological positions.",
+                            quote: "In the attitude of silence the soul finds the path in a clearer light, and what is elusive and deceptive resolves itself into crystal clearness.",
+                            source: "Mahatma Gandhi (inspired by Hindu teachings)",
+                            energyChange: 10,
+                            wisdomPoints: 1
+                        }
+                    }
+                ]
+            },
+            es: {
+                translations: {
+                    gameTitle: "Desafíos del Ego",
+                    gameSubtitle: "Un viaje de autoconocimiento a través de dilemas cotidianos",
+                    welcomeTitle: "Bienvenido a Desafíos del Ego",
+                    welcomeText: "Este juego te presenta situaciones cotidianas donde puedes elegir entre reacciones basadas en el ego y respuestas de mayor conciencia. Cada elección afecta tu equilibrio energético interno. No hay respuestas correctas o incorrectas, solo oportunidades para la autoobservación.",
+                    startButton: "Comenzar tu Viaje",
+                    egoChoiceLabel: "Respuesta del Ego",
+                    egoChoiceDescription: "Esta elección proviene del miedo, el orgullo o el apego",
+                    consciousChoiceLabel: "Conciencia Superior",
+                    consciousChoiceDescription: "Esta elección proviene del amor, la sabiduría o el desapego",
+                    wisdomPointsLabel: "Puntos de Sabiduría: ",
+                    balanceText: "Equilibrio: ",
+                    continueButton: "Continuar tu Viaje",
+                    footerText1: "Practica observar tu ego en la vida diaria. Cada momento es una oportunidad para despertar.",
+                    footerText2: "Hecho con ♥ para buscadores espirituales",
+                    completeTitle: "Viaje Completado",
+                    completeText: "Has completado esta ronda de Desafíos del Ego. Observa cómo aparece tu ego en la vida diaria y recuerda que cada momento es una oportunidad para elegir una conciencia superior."
+                },
+                scenarios: [
+                    {
+                        title: "El Comentario Crítico",
+                        text: "Un colega critica tu trabajo frente a otros durante una reunión. Te sientes a la defensiva y avergonzado.",
+                        egoChoice: {
+                            text: "Responde bruscamente, señalando sus defectos para defenderte.",
+                            feedback: "El ego prospera al tener razón y defender su posición. En este momento, a menudo olvidamos que la crítica dice más sobre el crítico que sobre nosotros.",
+                            quote: "¿Por qué miras la paja en el ojo de tu hermano y no ves la viga en el tuyo?",
+                            source: "Mateo 7:3 (Cristianismo)",
+                            energyChange: -10
+                        },
+                        consciousChoice: {
+                            text: "Respira profundamente, reconoce su punto neutralmente y sugiere discutir mejoras más tarde.",
+                            feedback: "Al no reaccionar a la defensiva, creas espacio para la comprensión. Este desapego te permite ver la verdad en la crítica sin personalizarla.",
+                            quote: "El sabio renuncia a todos los resultados, sean buenos o malos, y se concentra solo en la acción. El yoga es habilidad en la acción.",
+                            source: "Bhagavad Gita 2.50 (Hinduismo)",
+                            energyChange: 10,
+                            wisdomPoints: 1
+                        }
+                    },
+                    {
+                        title: "El Incidente de Tráfico",
+                        text: "Alguien te cierra el paso en el tráfico, casi causando un accidente. Tu corazón late con ira.",
+                        egoChoice: {
+                            text: "Toca el claxon agresivamente, grita e intenta vengarte cerrándole el paso.",
+                            feedback: "El ego exige justicia y reacciona violentamente ante las ofensas percibidas. Pero la ira daña más al que la lleva que a nadie más.",
+                            quote: "Aferrarse a la ira es como agarrar un carbón caliente con la intención de arrojárselo a alguien; eres tú quien se quema.",
+                            source: "Buda",
+                            energyChange: -15
+                        },
+                        consciousChoice: {
+                            text: "Respira profundamente, déjalo ir y envíales un deseo silencioso de conducción segura.",
+                            feedback: "Al elegir la compasión sobre la represalia, te liberas del ciclo de la ira. Este momento se convierte en una oportunidad para la práctica espiritual.",
+                            quote: "Bendice a los que te maldicen, ora por los que te maltratan.",
+                            source: "Lucas 6:28 (Cristianismo)",
+                            energyChange: 15,
+                            wisdomPoints: 2
+                        }
+                    }
+                ]
+            },
+            zh: {
+                translations: {
+                    gameTitle: "自我挑战",
+                    gameSubtitle: "通过日常困境进行自我认知的旅程",
+                    welcomeTitle: "欢迎来到自我挑战",
+                    welcomeText: "这个游戏向你展示日常情境，你可以在基于自我的反应和更高意识的回应之间做出选择。每个选择都会影响你的内在能量平衡。没有正确或错误的答案——只是自我观察的机会。",
+                    startButton: "开始你的旅程",
+                    egoChoiceLabel: "自我反应",
+                    egoChoiceDescription: "这个选择来自恐惧、骄傲或执着",
+                    consciousChoiceLabel: "更高意识",
+                    consciousChoiceDescription: "这个选择来自爱、智慧或超脱",
+                    wisdomPointsLabel: "智慧点数: ",
+                    balanceText: "平衡: ",
+                    continueButton: "继续你的旅程",
+                    footerText1: "练习在日常生活中观察你的自我。每个时刻都是觉醒的机会。",
+                    footerText2: "为精神寻求者而作 ♥",
+                    completeTitle: "旅程完成",
+                    completeText: "你已经完成了这一轮的自我挑战。观察你的自我在日常生活中如何表现，并记住每个时刻都是选择更高意识的机会。"
+                },
+                scenarios: [
+                    {
+                        title: "批评性评论",
+                        text: "一位同事在会议中当着其他人的面批评你的工作。你感到防备和尴尬。",
+                        egoChoice: {
+                            text: "尖锐回应，指出他们的缺点为自己辩护。",
+                            feedback: "自我因正确和捍卫自己的立场而茁壮成长。在这个时刻，我们常常忘记批评更多地反映了批评者而非我们自己。",
+                            quote: "为什么看见你弟兄眼中有刺，却不想自己眼中有梁木呢？",
+                            source: "马太福音7:3 (基督教)",
+                            energyChange: -10
+                        },
+                        consciousChoice: {
+                            text: "深呼吸，中立地承认他们的观点，并建议稍后讨论改进。",
+                            feedback: "通过不防御性地反应，你为理解创造了空间。这种超脱让你能看到批评中的真相而不将其个人化。",
+                            quote: "智者放弃所有结果，无论好坏，只专注于行动本身。瑜伽是行动中的技巧。",
+                            source: "薄伽梵歌2.50 (印度教)",
+                            energyChange: 10,
+                            wisdomPoints: 1
+                        }
+                    }
+                ]
+            },
+            fr: {
+                translations: {
+                    gameTitle: "Défis de l'Ego",
+                    gameSubtitle: "Un voyage de conscience de soi à travers des dilemmes quotidiens",
+                    welcomeTitle: "Bienvenue aux Défis de l'Ego",
+                    welcomeText: "Ce jeu vous présente des situations quotidiennes où vous pouvez choisir entre des réactions basées sur l'ego et des réponses de conscience supérieure. Chaque choix affecte votre équilibre énergétique intérieur. Il n'y a pas de bonnes ou mauvaises réponses - juste des opportunités d'auto-observation.",
+                    startButton: "Commencer votre Voyage",
+                    egoChoiceLabel: "Réponse de l'Ego",
+                    egoChoiceDescription: "Ce choix vient de la peur, de l'orgueil ou de l'attachement",
+                    consciousChoiceLabel: "Conscience Supérieure",
+                    consciousChoiceDescription: "Ce choix vient de l'amour, de la sagesse ou du détachement",
+                    wisdomPointsLabel: "Points de Sagesse: ",
+                    balanceText: "Équilibre: ",
+                    continueButton: "Continuer votre Voyage",
+                    footerText1: "Pratiquez l'observation de votre ego dans la vie quotidienne. Chaque instant est une opportunité d'éveil.",
+                    footerText2: "Fait avec ♥ pour les chercheurs spirituels",
+                    completeTitle: "Voyage Terminé",
+                    completeText: "Vous avez terminé cette série de Défis de l'Ego. Observez comment votre ego se manifeste dans la vie quotidienne et souvenez-vous que chaque instant est une opportunité de choisir une conscience supérieure."
+                },
+                scenarios: [
+                    {
+                        title: "Le Commentaire Critique",
+                        text: "Un collègue critique votre travail devant d'autres lors d'une réunion. Vous vous sentez sur la défensive et embarrassé.",
+                        egoChoice: {
+                            text: "Répondez vivement, en soulignant leurs défauts pour vous défendre.",
+                            feedback: "L'ego prospère en ayant raison et en défendant sa position. Dans ce moment, nous oublions souvent que la critique en dit plus sur le critique que sur nous.",
+                            quote: "Pourquoi vois-tu la paille dans l'œil de ton frère, et ne remarques-tu pas la poutre dans ton œil ?",
+                            source: "Matthieu 7:3 (Christianisme)",
+                            energyChange: -10
+                        },
+                        consciousChoice: {
+                            text: "Prenez une profonde inspiration, reconnaissez leur point de vue de manière neutre et suggérez de discuter des améliorations plus tard.",
+                            feedback: "En ne réagissant pas de manière défensive, vous créez un espace pour la compréhension. Ce détachement vous permet de voir la vérité dans la critique sans la prendre personnellement.",
+                            quote: "Le sage renonce à tous les résultats, bons ou mauvais, et se concentre uniquement sur l'action. Le yoga est l'habileté dans l'action.",
+                            source: "Bhagavad Gita 2.50 (Hindouisme)",
+                            energyChange: 10,
+                            wisdomPoints: 1
+                        }
+                    }
+                ]
+            },
+            it: {
+                translations: {
+                    gameTitle: "Sfide dell'Ego",
+                    gameSubtitle: "Un viaggio di autoconsapevolezza attraverso dilemmi quotidiani",
+                    welcomeTitle: "Benvenuto in Sfide dell'Ego",
+                    welcomeText: "Questo gioco ti presenta situazioni quotidiane in cui puoi scegliere tra reazioni basate sull'ego e risposte di coscienza superiore. Ogni scelta influisce sul tuo equilibrio energetico interiore. Non ci sono risposte giuste o sbagliate, solo opportunità per l'auto-osservazione.",
+                    startButton: "Inizia il Tuo Viaggio",
+                    egoChoiceLabel: "Risposta dell'Ego",
+                    egoChoiceDescription: "Questa scelta deriva da paura, orgoglio o attaccamento",
+                    consciousChoiceLabel: "Coscienza Superiore",
+                    consciousChoiceDescription: "Questa scelta deriva da amore, saggezza o distacco",
+                    wisdomPointsLabel: "Punti Saggezza: ",
+                    balanceText: "Equilibrio: ",
+                    continueButton: "Continua il Tuo Viaggio",
+                    footerText1: "Pratica l'osservazione del tuo ego nella vita quotidiana. Ogni momento è un'opportunità per il risveglio.",
+                    footerText2: "Creato con ♥ per cercatori spirituali",
+                    completeTitle: "Viaggio Completato",
+                    completeText: "Hai completato questo round di Sfide dell'Ego. Osserva come il tuo ego si manifesta nella vita quotidiana e ricorda che ogni momento è un'opportunità per scegliere una coscienza superiore."
+                },
+                scenarios: [
+                    {
+                        title: "Il Commento Critico",
+                        text: "Un collega critica il tuo lavoro di fronte ad altri durante una riunione. Ti senti sulla difensiva e imbarazzato.",
+                        egoChoice: {
+                            text: "Rispondi bruscamente, sottolineando i loro difetti per difenderti.",
+                            feedback: "L'ego prospera nell'avere ragione e nel difendere la propria posizione. In questo momento, spesso dimentichiamo che la critica dice più sul critico che su di noi.",
+                            quote: "Perché guardi la pagliuzza nell'occhio del tuo fratello e non ti accorgi della trave nel tuo?",
+                            source: "Matteo 7:3 (Cristianesimo)",
+                            energyChange: -10
+                        },
+                        consciousChoice: {
+                            text: "Fai un respiro profondo, riconosci il loro punto in modo neutrale e suggerisci di discutere i miglioramenti più tardi.",
+                            feedback: "Non reagendo in modo difensivo, crei spazio per la comprensione. Questo distacco ti permette di vedere la verità nella critica senza prenderla sul personale.",
+                            quote: "Il saggio rinuncia a tutti i risultati, buoni o cattivi, e si concentra solo sull'azione. Lo yoga è abilità nell'azione.",
+                            source: "Bhagavad Gita 2.50 (Induismo)",
+                            energyChange: 10,
+                            wisdomPoints: 1
+                        }
+                    }
+                ]
+            },
+            ja: {
+                translations: {
+                    gameTitle: "エゴチャレンジ",
+                    gameSubtitle: "日常のジレンマを通じた自己認識の旅",
+                    welcomeTitle: "エゴチャレンジへようこそ",
+                    welcomeText: "このゲームでは、エゴに基づく反応と高い意識に基づく対応の間で選択できる日常的な状況が提示されます。それぞれの選択が内なるエネルギーバランスに影響します。正解や不正解はありません。自己観察の機会があるだけです。",
+                    startButton: "旅を始める",
+                    egoChoiceLabel: "エゴの反応",
+                    egoChoiceDescription: "この選択は恐怖、プライド、または執着から来ています",
+                    consciousChoiceLabel: "高い意識",
+                    consciousChoiceDescription: "この選択は愛、知恵、または執着のなさから来ています",
+                    wisdomPointsLabel: "知恵ポイント: ",
+                    balanceText: "バランス: ",
+                    continueButton: "旅を続ける",
+                    footerText1: "日常生活でエゴを観察する練習をしましょう。すべての瞬間が目覚めの機会です。",
+                    footerText2: "精神的な探求者のために♥で作られました",
+                    completeTitle: "旅の完了",
+                    completeText: "このラウンドのエゴチャレンジを完了しました。日常生活でエゴがどのように現れるかを観察し、すべての瞬間がより高い意識を選択する機会であることを覚えておいてください。"
+                },
+                scenarios: [
+                    {
+                        title: "批判的なコメント",
+                        text: "同僚が会議中に他の人の前であなたの仕事を批判します。あなたは防御的になり、恥ずかしさを感じます。",
+                        egoChoice: {
+                            text: "鋭く反応し、自分の欠点を指摘して自分を守ります。",
+                            feedback: "エゴは正しいことと自分の立場を守ることで繁栄します。この瞬間、私たちはしばしば批判が私たちについてではなく、批評家についてより多くを語っていることを忘れています。",
+                            quote: "なぜ兄弟の目にあるちりを見ながら、自分の目にある梁を認めないのか。",
+                            source: "マタイによる福音書7:3 (キリスト教)",
+                            energyChange: -10
+                        },
+                        consciousChoice: {
+                            text: "深呼吸をし、彼らのポイントを中立的に認め、後で改善点について話し合うことを提案します。",
+                            feedback: "防御的に反応しないことで、理解のためのスペースを作ります。この執着のなさにより、批判の中にある真実を個人的に受け取ることなく見ることができます。",
+                            quote: "賢者は、良いものであれ悪いものであれ、すべての結果を放棄し、行動そのものに集中します。ヨガは行動におけるスキルです。",
+                            source: "バガヴァッド・ギーター2.50 (ヒンドゥー教)",
+                            energyChange: 10,
+                            wisdomPoints: 1
+                        }
+                    }
+                ]
+            },
+            ar: {
+                translations: {
+                    gameTitle: "تحديات الأنا",
+                    gameSubtitle: "رحلة الوعي الذاتي من خلال المعضلات اليومية",
+                    welcomeTitle: "مرحبًا بك في تحديات الأنا",
+                    welcomeText: "تعرض عليك هذه اللعبة مواقف يومية حيث يمكنك الاختيار بين ردود فعل قائمة على الأنا واستجابات أعلى وعيًا. كل اختيار يؤثر على توازن طاقتك الداخلية. لا توجد إجابات صحيحة أو خاطئة - فقط فرص للملاحظة الذاتية.",
+                    startButton: "ابدأ رحلتك",
+                    egoChoiceLabel: "رد فعل الأنا",
+                    egoChoiceDescription: "هذا الاختيار يأتي من الخوف أو الكبرياء أو التعلق",
+                    consciousChoiceLabel: "الوعي الأعلى",
+                    consciousChoiceDescription: "هذا الاختيار يأتي من الحكمة أو الحب أو عدم التعلق",
+                    wisdomPointsLabel: "نقاط الحكمة: ",
+                    balanceText: "التوازن: ",
+                    continueButton: "واصل رحلتك",
+                    footerText1: "تمرن على مراقبة الأنا في الحياة اليومية. كل لحظة هي فرصة للاستيقاظ.",
+                    footerText2: "صنع ب♥ لطالبي الروحانيات",
+                    completeTitle: "اكتملت الرحلة",
+                    completeText: "لقد أكملت هذه الجولة من تحديات الأنا. راقب كيف تظهر الأنا في الحياة اليومية وتذكر أن كل لحظة هي فرصة لاختيار وعي أعلى."
+                },
+                scenarios: [
+                    {
+                        title: "التعليق النقدي",
+                        text: "ينتقد زميل عملك أمام الآخرين خلال اجتماع. تشعر بالدفاع عن نفسك والإحراج.",
+                        egoChoice: {
+                            text: "ترد بحدة، مشيرًا إلى عيوبهم للدفاع عن نفسك.",
+                            feedback: "تزدهر الأنا من خلال كونها على حق والدفاع عن موقفها. في هذه اللحظة، غالبًا ما ننسى أن النقد يقول المزيد عن الناقد أكثر مما يقول عنا.",
+                            quote: "لماذا تنظر إلى القذى الذي في عين أخيك، ولا تبصر الخشبة التي في عينك؟",
+                            source: "متى 7:3 (المسيحية)",
+                            energyChange: -10
+                        },
+                        consciousChoice: {
+                            text: "خذ نفسًا عميقًا، اعترف بنقطة محادثتهم بشكل محايد، واقترح مناقشة التحسينات لاحقًا.",
+                            feedback: "من خلال عدم الرد بشكل دفاعي، فإنك تخلق مساحة للفهم. هذا الانفصال يسمح لك برؤية الحقيقة في النقد دون أخذها بشكل شخصي.",
+                            quote: "يتخلى الرجل الحكيم عن جميع النتائج، سواء كانت جيدة أو سيئة، ويركز على العمل وحده. اليوجا هي المهارة في الأفعال.",
+                            source: "بهاغافاد غيتا 2.50 (الهندوسية)",
+                            energyChange: 10,
+                            wisdomPoints: 1
+                        }
+                    }
+                ]
+            }
+        };
 
-  // --- Estado del juego ---
-  let current = 0, totalScore = 0;
+        // Current language
+        let currentLanguage = 'en';
+        let currentDirection = 'ltr';
 
-  // --- Renderizado ---
-  function renderQuestion() {
-    const q = questions[current];
-    document.getElementById('app').innerHTML = `
-      <h2 class="text-xl font-semibold mb-4">${q.question}</h2>
-      <div class="space-y-2">
-        ${q.options.map((o,i) =>
-          `<button data-idx="${i}"
-            class="w-full text-left px-4 py-2 bg-blue-100 hover:bg-blue-200 rounded">
-             ${o.text}
-          </button>`
-        ).join('')}
-      </div>
-    `;
-    document.querySelectorAll('button[data-idx]').forEach(btn=>{
-      btn.addEventListener('click', () => {
-        const opt = q.options[btn.dataset.idx];
-        totalScore += opt.score;
-        showFeedback(opt.feedback);
-      });
-    });
-  }
+        // Game State
+        let currentScenario = 0;
+        let energyBalance = 50;
+        let wisdomPoints = 0;
+        let gameStarted = false;
 
-  function showFeedback(message) {
-    const app = document.getElementById('app');
-    app.innerHTML = `
-      <p class="mb-4 italic text-gray-700">“${message}”</p>
-      <button id="nextBtn" class="px-4 py-2 bg-green-200 hover:bg-green-300 rounded">
-        Siguiente
-      </button>
-    `;
-    document.getElementById('nextBtn').addEventListener('click', () => {
-      current++;
-      current < questions.length ? renderQuestion() : showResult();
-    });
-  }
+        // DOM Elements
+        const startScreen = document.getElementById('startScreen');
+        const startBtn = document.getElementById('startBtn');
+        const scenarioTitle = document.getElementById('scenarioTitle');
+        const scenarioText = document.getElementById('scenarioText');
+        const choicesContainer = document.getElementById('choicesContainer');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const feedbackText = document.getElementById('feedbackText');
+        const quoteSource = document.getElementById('quoteSource');
+        const nextBtn = document.getElementById('nextBtn');
+        const energyBar = document.getElementById('energyBar');
+        const energyScore = document.getElementById('energyScore');
+        const wisdomPointsContainer = document.getElementById('wisdomPointsContainer');
+        const wisdomPointsDisplay = document.getElementById('wisdomPoints');
 
-  function showResult() {
-    document.getElementById('app').innerHTML = `
-      <h2 class="text-2xl font-bold mb-4">Tu Sabiduría: ${totalScore}</h2>
-      <p class="mb-6">“El que domina a otros es fuerte; el que se domina a sí mismo es poderoso.”</p>
-      <button onclick="restart()" 
-        class="px-4 py-2 bg-purple-200 hover:bg-purple-300 rounded">
-        Reiniciar
-      </button>
-    `;
-  }
+        // Change language function
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Set RTL for Arabic
+            if (lang === 'ar') {
+                currentDirection = 'rtl';
+                document.body.dir = 'rtl';
+            } else {
+                currentDirection = 'ltr';
+                document.body.dir = 'ltr';
+            }
+            
+            // Update all translatable elements
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = gameData[lang].translations[key];
+            });
+            
+            // Update button texts
+            if (gameStarted) {
+                startBtn.textContent = gameData[lang].translations.startButton;
+                nextBtn.textContent = gameData[lang].translations.continueButton;
+            }
+            
+            // Reload the current scenario with new language
+            if (gameStarted) {
+                loadScenario(currentScenario);
+            }
+        }
 
-  function restart() {
-    current = 0; totalScore = 0;
-    renderQuestion();
-  }
+        // Initialize the game
+        function initGame() {
+            gameStarted = true;
+            startScreen.classList.add('hidden');
+            wisdomPointsContainer.classList.remove('hidden');
+            updateWisdomPoints();
+            loadScenario(0);
+        }
 
-  // --- Iniciar ---
-  renderQuestion();
-  </script>
+        // Load a scenario
+        function loadScenario(index) {
+            if (index >= gameData[currentLanguage].scenarios.length) {
+                // Game completed
+                scenarioTitle.textContent = gameData[currentLanguage].translations.completeTitle;
+                scenarioText.textContent = gameData[currentLanguage].translations.completeText;
+                choicesContainer.classList.add('hidden');
+                feedbackContainer.classList.add('hidden');
+                
+                // Show final stats
+                const finalStats = document.createElement('div');
+                finalStats.className = 'text-center mb-6';
+                finalStats.innerHTML = `
+                    <div class="inline-block bg-amber-50 px-6 py-4 rounded-lg mb-4">
+                        <p class="text-sm text-amber-700">${gameData[currentLanguage].translations.balanceText}</p>
+                        <p class="text-3xl font-bold text-amber-800">${energyBalance}</p>
+                    </div>
+                    <div class="inline-block bg-green-50 px-6 py-4 rounded-lg">
+                        <p class="text-sm text-green-700">${gameData[currentLanguage].translations.wisdomPointsLabel}</p>
+                        <p class="text-3xl font-bold text-green-800">${wisdomPoints}</p>
+                    </div>
+                `;
+                scenarioText.insertAdjacentElement('afterend', finalStats);
+                
+                // Add restart button
+                const restartBtn = document.createElement('button');
+                restartBtn.className = 'bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300';
+                restartBtn.textContent = gameData[currentLanguage].translations.startButton;
+                restartBtn.addEventListener('click', () => {
+                    location.reload();
+                });
+                scenarioText.insertAdjacentElement('afterend', restartBtn);
+                return;
+            }
+
+            currentScenario = index;
+            const scenario = gameData[currentLanguage].scenarios[index];
+            
+            scenarioTitle.textContent = scenario.title;
+            scenarioText.textContent = scenario.text;
+            
+            // Clear previous choices
+            while (choicesContainer.children.length > 2) {
+                choicesContainer.removeChild(choicesContainer.lastChild);
+            }
+            
+            // Clone and update choice buttons
+            const egoChoiceBtn = choicesContainer.children[0].cloneNode(true);
+            egoChoiceBtn.querySelector('h3').textContent = scenario.egoChoice.text;
+            egoChoiceBtn.addEventListener('click', () => makeChoice('ego'));
+            
+            const consciousChoiceBtn = choicesContainer.children[1].cloneNode(true);
+            consciousChoiceBtn.querySelector('h3').textContent = scenario.consciousChoice.text;
+            consciousChoiceBtn.addEventListener('click', () => makeChoice('conscious'));
+            
+            // Replace buttons
+            choicesContainer.innerHTML = '';
+            choicesContainer.appendChild(egoChoiceBtn);
+            choicesContainer.appendChild(consciousChoiceBtn);
+            
+            // Show choices
+            choicesContainer.classList.remove('hidden');
+            feedbackContainer.classList.add('hidden');
+        }
+
+        // Handle choice selection
+        function makeChoice(choiceType) {
+            const scenario = gameData[currentLanguage].scenarios[currentScenario];
+            const choice = choiceType === 'ego' ? scenario.egoChoice : scenario.consciousChoice;
+            
+            // Update energy balance
+            energyBalance += choice.energyChange;
+            if (energyBalance > 100) energyBalance = 100;
+            if (energyBalance < 0) energyBalance = 0;
+            
+            // Update wisdom points if earned
+            if (choice.wisdomPoints) {
+                wisdomPoints += choice.wisdomPoints;
+                updateWisdomPoints();
+                
+                // Show floating +1 animation
+                const pointAnimation = document.createElement('div');
+                pointAnimation.className = 'wisdom-point absolute text-green-500 font-bold';
+                pointAnimation.textContent = `+${choice.wisdomPoints}`;
+                pointAnimation.style.left = `${Math.random() * 80 + 10}%`;
+                pointAnimation.style.top = '60%';
+                document.querySelector('main').appendChild(pointAnimation);
+                
+                // Remove after animation
+                setTimeout(() => {
+                    pointAnimation.remove();
+                }, 1000);
+            }
+            
+            // Update UI
+            energyBar.style.width = `${energyBalance}%`;
+            energyScore.textContent = `${gameData[currentLanguage].translations.balanceText}${energyBalance}`;
+            
+            // Change background color slightly based on energy
+            document.body.style.backgroundColor = energyBalance > 50 ? 
+                `rgba(248, 245, 242, ${1 - (energyBalance - 50) / 100})` : 
+                `rgba(248, 245, 242, ${1 + (50 - energyBalance) / 100})`;
+            
+            // Show feedback
+            feedbackText.textContent = choice.feedback;
+            quoteSource.textContent = `— ${choice.source}`;
+            if (choice.quote) {
+                feedbackText.textContent = `"${choice.quote}" ${choice.feedback}`;
+            }
+            
+            choicesContainer.classList.add('hidden');
+            feedbackContainer.classList.remove('hidden');
+        }
+
+        // Update wisdom points display
+        function updateWisdomPoints() {
+            wisdomPointsDisplay.textContent = wisdomPoints;
+        }
+
+        // Event Listeners
+        startBtn.addEventListener('click', initGame);
+        
+        nextBtn.addEventListener('click', () => {
+            loadScenario(currentScenario + 1);
+        });
+
+        // Initial setup
+        if (!gameStarted) {
+            startScreen.classList.remove('hidden');
+            choicesContainer.classList.add('hidden');
+            feedbackContainer.classList.add('hidden');
+            wisdomPointsContainer.classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
