@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ego Challenges</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-50 p-4">
+  <div id="app" class="w-full max-w-md bg-white shadow-lg rounded-lg p-6"></div>
+
+  <script>
+  // --- Datos: preguntas y opciones ---
+  const questions = [
+    {
+      question: "Alguien te critica delante de otros…",
+      options: [
+        { text: "Respondo con sarcasmo", score: 0, feedback: "El ego reacciona." },
+        { text: "Respiro y agradezco en silencio", score: 1, feedback: "Cultivas la humildad." }
+      ]
+    },
+    {
+      question: "Ves algo que deseas pero no necesitas…",
+      options: [
+        { text: "Lo compro de todos modos", score: 0, feedback: "El deseo te domina." },
+        { text: "Observas el impulso y lo sueltas", score: 1, feedback: "Ganas desapego." }
+      ]
+    },
+    {
+      question: "Alguien hace algo distinto a como tú lo harías…",
+      options: [
+        { text: "Insisto que cambie", score: 0, feedback: "El control es una trampa del ego." },
+        { text: "Confío y suelto", score: 1, feedback: "Practicas la confianza." }
+      ]
+    }
+    // …añadí más preguntas aquí
+  ];
+
+  // --- Estado del juego ---
+  let current = 0, totalScore = 0;
+
+  // --- Renderizado ---
+  function renderQuestion() {
+    const q = questions[current];
+    document.getElementById('app').innerHTML = `
+      <h2 class="text-xl font-semibold mb-4">${q.question}</h2>
+      <div class="space-y-2">
+        ${q.options.map((o,i) =>
+          `<button data-idx="${i}"
+            class="w-full text-left px-4 py-2 bg-blue-100 hover:bg-blue-200 rounded">
+             ${o.text}
+          </button>`
+        ).join('')}
+      </div>
+    `;
+    document.querySelectorAll('button[data-idx]').forEach(btn=>{
+      btn.addEventListener('click', () => {
+        const opt = q.options[btn.dataset.idx];
+        totalScore += opt.score;
+        showFeedback(opt.feedback);
+      });
+    });
+  }
+
+  function showFeedback(message) {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <p class="mb-4 italic text-gray-700">“${message}”</p>
+      <button id="nextBtn" class="px-4 py-2 bg-green-200 hover:bg-green-300 rounded">
+        Siguiente
+      </button>
+    `;
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      current++;
+      current < questions.length ? renderQuestion() : showResult();
+    });
+  }
+
+  function showResult() {
+    document.getElementById('app').innerHTML = `
+      <h2 class="text-2xl font-bold mb-4">Tu Sabiduría: ${totalScore}</h2>
+      <p class="mb-6">“El que domina a otros es fuerte; el que se domina a sí mismo es poderoso.”</p>
+      <button onclick="restart()" 
+        class="px-4 py-2 bg-purple-200 hover:bg-purple-300 rounded">
+        Reiniciar
+      </button>
+    `;
+  }
+
+  function restart() {
+    current = 0; totalScore = 0;
+    renderQuestion();
+  }
+
+  // --- Iniciar ---
+  renderQuestion();
+  </script>
+</body>
+</html>
